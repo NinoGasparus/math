@@ -1,4 +1,4 @@
 #!/bin/bash
 
-g++  main.cpp -o test
-./test
+g++  main.cpp -o math.program
+./math.program
