@@ -1,0 +1,12 @@
+import random
+
+# Generate a random 10,000-digit integer
+digits = [str(random.randint(0, 9)) for _ in range(10000000)]
+random_number = ''.join(digits)
+
+# Make sure the first digit is not zero
+if random_number[0] == '0':
+    random_number = str(random.randint(1, 9)) + random_number[1:]
+
+print(random_number)
+

@@ -1,75 +1,66 @@
-#include <bitset>
-#include <cmath>
-#include <cstdint>
-#include <cstring>
 #include <iostream>
-#include <string>
-
-uint64_t betterPOW(int exp){
-  uint64_t base = 1;
-  for(int  i =  0; i < exp; i++){
-    base *= 10;
-  }
-  return base;
-}
-void showmem(uint64_t* memory, int size){
-  for(int i =0; i < size; i++){
-    std::cout<< std::bitset<64>(memory[i]) << "  => " <<memory[i] <<std::endl;
-  }
-}
-
-void memCheck(char* StringNumber, uint64_t * memory){
-     
-}
-
-int main (int argc, char *argv[]) {
-  
-  //working space
-  uint64_t memory[10];
-  //clear the working space
-  for(int i =0; i < sizeof(memory) / 8; i++){
-    memory[i] = 0;
-  }
-
-  //pretty useles considering argv exsits however...
-  //used to stor intiger values of the  number 
-  char* d10Word = new char[strlen(argv[1])];
-  //string->int conversion
-  for(int i =0; i < strlen(argv[1]); i++){
-    d10Word[i] = argv[1][i] - 48;
-  }
-  
-  //lenght of the number up to 2^64-1... for now  ofc
-  uint64_t asizee = strlen(argv[1]);
-  
-  std::cout << '\n' << asizee;
-  
-  //current buffer being writen to 
-  int bufIndex = 0;
-  //exponent 
-  int exp  = 0;
-  printf("\n");
-  for(int i = 0; i < (int)asizee/19+1; i++){
-    int chunkSize = 19;
-    if(i * 19 +19> asizee-1){
-      chunkSize = asizee - i*19;
+#include <fstream>
+#include <cstring>
+#include <chrono>
+#include <cstdint>
+#include <cmath>
+uint64_t betterPOW(int exp) {
+    uint64_t base = 1;
+    for (int i = 0; i < exp; i++) {
+        base *= 10;
     }
-    for(int j = 0  ; j < chunkSize; j++){
-      memory[bufIndex] += betterPOW( exp) * d10Word[(asizee-1)-(i*19+j)];
-      exp++;
-    }
-    //printf("ran cycle of  %d itterations", chunkSize);
-    exp = 0;
-    bufIndex ++;
-  }
-
-  printf("\n");
-  showmem(memory, 10);
-  
-  //security check V2.0
-  memCheck(argv[1], memory);
-  return 0;
+    return base;
 }
 
+int main(int argc, char* argv[]) {
+    std::ifstream file(argv[1]);
+    if (!file) {
+        std::cerr << "Error opening file!" << std::endl;
+        return 1;
+    }
 
+    std::string number;
+    file >> number;
+    file.close();
+
+    auto start = std::chrono::high_resolution_clock::now();
+    int blockCount = std::floor(number.size() / 19) + 1;
+
+    uint64_t* memory = new uint64_t[blockCount];
+    std::memset(memory, 0, blockCount * sizeof(uint64_t));
+
+    char* d10Word = new char[number.size()];
+    for (size_t i = 0; i < number.size(); i++) {
+        d10Word[i] = number[i] - '0';
+    }
+
+    // Length of the number
+    uint64_t asizee = number.size();
+
+    // Current buffer being written to
+    int bufIndex = 0;
+    // Exponent
+    int exp = 0;
+
+    for (int i = 0; i < (int)asizee / 19 + 1; i++) {
+        int chunkSize = 19;
+        if (i * 19 + 19 > asizee - 1) {
+            chunkSize = asizee - i * 19;
+        }
+        for (int j = 0; j < chunkSize; j++) {
+            memory[bufIndex] += betterPOW(exp) * d10Word[(asizee - 1) - (i * 19 + j)];
+            exp++;
+        }
+        exp = 0;
+        bufIndex++;
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout<< std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << std::endl;
+
+    delete[] memory;
+    delete[] d10Word;
+
+    return 0;
+}
 
