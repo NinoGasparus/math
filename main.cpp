@@ -1,27 +1,48 @@
+#include <bitset>
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <chrono>
 #include <cstdint>
 #include <cmath>
-uint64_t betterPOW(int exp) {
-    uint64_t base = 1;
-    for (int i = 0; i < exp; i++) {
-        base *= 10;
-    }
-    return base;
+#include "math.h"
+void printNumber(uint64_t* number, int chunks){
+  for(int i =chunks-1; i >=0; i--){
+    std::cout << number[i];
+  }
+
+
 }
 
+void printMem(uint64_t* mem, int size){
+    for(int i =0; i < size; i++){
+      std::cout << std::bitset<64>(mem[i]) << " => "  << mem[i] << '\n';
+  }
+
+}
 int main(int argc, char* argv[]) {
-    std::ifstream file(argv[1]);
+  bigNumber* m = new bigNumber();
+  m->sayHello();
+  std::string number = ""; 
+
+  char* arg = new char[3];
+  arg[0] = '-';
+  arg[1] = 'f';
+  arg[2] = 'h';
+  //production ready comparsion right there 
+  if(argv[1][0]  == arg[0] && argv[1][1] == arg[1]){
+    std::ifstream file(argv[2]);
     if (!file) {
         std::cerr << "Error opening file!" << std::endl;
         return 1;
     }
-
-    std::string number;
+    
     file >> number;
     file.close();
+  }else{
+    number = argv[2];
+  }
+  
 
     auto start = std::chrono::high_resolution_clock::now();
     int blockCount = std::floor(number.size() / 19) + 1;
@@ -57,7 +78,9 @@ int main(int argc, char* argv[]) {
 
     auto end = std::chrono::high_resolution_clock::now();
     std::cout<< std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << std::endl;
-
+    printMem(memory, blockCount);
+  printf("\n");
+    printNumber(memory, blockCount);
     delete[] memory;
     delete[] d10Word;
 

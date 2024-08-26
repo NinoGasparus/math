@@ -1,3 +1,3 @@
 #!/bin/bash
 
-g++  -O3 main.cpp -o math.program
+g++  -oo main.cpp bigNumber.cpp -o math.program
