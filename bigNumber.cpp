@@ -3,10 +3,12 @@
 #include <csignal>
 #include <cstdint>
 #include <cstring>
+#include <exception>
+#include <fstream>
 #include <stdio.h>
 #include <string>
-
-
+#include <bitset>
+#include <iostream>
 //number of  digits (b10) that can fit inside the default memory unit (64bits) without the possibility of overflow 
 const int PRECISION = 19;
 //default lenght of the memory used to store the number in units of  DEFBUFSIZE bytes 
@@ -19,13 +21,13 @@ const int DEFBUFSIZE = 10;
 int REGSIZE = 8;
 
 void bigNumber::init(){
-  this->memory = new uint64_t[DEFBUFSIZE]; 
-  std::memset(this->memory, 0, DEFBUFSIZE * REGSIZE);
+  memory = new uint64_t[DEFBUFSIZE]; 
+  std::memset(memory, 0, DEFBUFSIZE * REGSIZE);
 
   
-  this->exp = 0;   
-  this->size = 0;
-  this->blockCount = 0; 
+  exp = 0;   
+  size = 0;
+  blockCount = 0; 
 }
 
 uint64_t betterPOW(int exp) {
@@ -37,17 +39,17 @@ uint64_t betterPOW(int exp) {
 }
 
 void  bigNumber::loadStr(std::string number){
-  this->size = number.size();
-  this->blockCount = std::floor(this->size / PRECISION) +1;
+  size = number.size();
+ blockCount = std::floor(size / PRECISION) +1;
   //realocate new memory are with more space
-  if(this->blockCount > DEFBUFSIZE){
-    delete [] this->memory;
-    this->memory =new uint64_t[this->blockCount];
-    std::memset(this->memory, 0, this->blockCount*REGSIZE);
+  if(blockCount > DEFBUFSIZE){
+    delete [] memory;
+    memory =new uint64_t[blockCount];
+    std::memset(memory, 0, blockCount*REGSIZE);
   }
   
   //subtract binary 0 from every character of the number to convert them to their b10 representations
-  for(int i = 0; i < this->size; i++){
+  for(int i = 0; i < size; i++){
     number[i] = number[i] - '0';
   }
 
@@ -55,15 +57,15 @@ void  bigNumber::loadStr(std::string number){
   int tmpExp = 0;
   int chunkSize = PRECISION; 
 
-  for(int i = 0; i < (int)this->size / PRECISION + 1; i++){
-    if(i * PRECISION + PRECISION > this->size-1){
-      chunkSize = this->size - i * PRECISION; 
+  for(int i = 0; i < (int)size / PRECISION + 1; i++){
+    if(i * PRECISION + PRECISION > size-1){
+      chunkSize = size - i * PRECISION; 
     }else{ 
       chunkSize = PRECISION;
     }
 
     for(int j = 0; j < chunkSize; j++){
-      this->memory[bufIndex] += betterPOW(exp) * number[(this->size -1) - (i * PRECISION + j)];
+     memory[bufIndex] += betterPOW(exp) * number[(size -1) - (i * PRECISION + j)];
       exp++;
     }
     exp = 0;
@@ -71,5 +73,21 @@ void  bigNumber::loadStr(std::string number){
   }
   
 }
+
+void bigNumber::loadFile(std::ifstream fileHandle){
+  try{
+    if(!fileHandle){
+      throw std::exception();
+    }else{
+      std::string s;
+      fileHandle >> s;
+      loadStr(s);
+      fileHandle.close();
+    }
+  }catch(std::exception e){
+      printf("Error loading file");
+  }
+}
+
 
 
