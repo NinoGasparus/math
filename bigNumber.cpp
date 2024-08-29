@@ -89,5 +89,28 @@ void bigNumber::loadFile(std::ifstream fileHandle){
   }
 }
 
+void bigNumber::extend(int chunkCount, bool location){
+  //if true  extend in  front  else extend  from  the back  
+  if(location){
+    uint64_t* newMemory = new uint64_t[blockCount+chunkCount];
+    memset(newMemory+blockCount, 0,chunkCount * REGSIZE);
+    memcpy(newMemory,memory, blockCount*REGSIZE);
 
+    delete[] memory;
+    blockCount =  this->blockCount + chunkCount;
+    this->memory = newMemory;
+
+
+  }else{
+    uint64_t* newMemory = new uint64_t[blockCount+chunkCount];
+
+    memset(newMemory, 0, chunkCount * REGSIZE);
+    memcpy(newMemory+chunkCount ,memory, blockCount*REGSIZE);
+
+    delete[] memory;
+    this->memory = newMemory;
+    blockCount = this->blockCount + chunkCount;
+  }
+
+}
 

@@ -5,7 +5,7 @@ public:
   void init();
   void loadStr(std::string number);
   void loadFile(std::ifstream fileHandle);
-  
+  void extend(int chunkCount, bool location); 
   
 
   uint64_t* memory;

@@ -1,5 +1,3 @@
-#include <iostream>
-#include <fstream>
 #include <cstring>
 #include <cstdint>
 #include <cmath>
@@ -16,7 +14,9 @@ int main(int argc, char* argv[]) {
   B->loadStr(number);
   printMem(*B);
   printf("\n");
-  bigPrint(*B);
+  B->extend(10, false);
+  B->extend(3, true);
+  printMem(*B);
   return 0;
 }
 
