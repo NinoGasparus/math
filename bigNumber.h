@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <fstream>
 #include <string>
 class bigNumber{
@@ -18,3 +19,7 @@ void printMem(int id, bigNumber number);
 void printMem(bigNumber number);
 
 void bigPrint(bigNumber number);
+
+uint64_t getOverflow(uint64_t  n1, uint64_t n2);
+void buffersEaqualize(bigNumber* n1, bigNumber* n2, bigNumber* n3);
+

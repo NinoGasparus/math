@@ -89,6 +89,11 @@ void bigNumber::loadFile(std::ifstream fileHandle){
   }
 }
 
+
+
+
+
+
 void bigNumber::extend(int chunkCount, bool location){
   //if true  extend in  front  else extend  from  the back  
   if(location){
