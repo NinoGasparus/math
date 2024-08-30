@@ -52,7 +52,14 @@ void buffersEaqualize(bigNumber* n1, bigNumber*  n2, bigNumber* n3){
   n3->extend(maxBufLen-n3->blockCount, true);
 
 }
-
+uint64_t incrementOverflow(uint64_t target,  uint64_t overflow){
+  target += overflow;
+  if(target < overflow){
+    return getOverflow(target, overflow);
+  }else{
+    return overflow;
+  }
+}
 
 void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   buffersEaqualize(n1, n2, dest);
@@ -61,5 +68,24 @@ void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   uint64_t* n2mem =  n2->memory;
   uint64_t* n3mem =  dest->memory;
   
+  uint64_t buffCounter = 0;
+  uint64_t overflow = 0;
+  while(true){
+    n3mem[buffCounter] =  n1mem[buffCounter] + n2mem[buffCounter];
+    
+    if(n3mem[buffCounter] < n1mem[buffCounter] || n3mem[buffCounter] < n2mem[buffCounter]){
+      n3mem[buffCounter] = getOverflow(n1mem[buffCounter] , n2mem[buffCounter]);
+      overflow ++;
+    }
+    if(overflow !=  0){
+      overflow -= incrementOverflow(n3mem[buffCounter], overflow);
 
+    }
+    buffCounter++;
+    
+    if(buffCounter == n1->blockCount){
+      break;
+    }
+  }
+ 
 }

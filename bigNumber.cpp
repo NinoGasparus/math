@@ -74,7 +74,9 @@ void  bigNumber::loadStr(std::string number){
   
 }
 
-void bigNumber::loadFile(std::ifstream fileHandle){
+void bigNumber::loadFile(std::string filename){
+
+  std::ifstream fileHandle(filename);
   try{
     if(!fileHandle){
       throw std::exception();

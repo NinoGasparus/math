@@ -5,7 +5,7 @@ class bigNumber{
 public:
   void init();
   void loadStr(std::string number);
-  void loadFile(std::ifstream fileHandle);
+  void loadFile(std::string filename);
   void extend(int chunkCount, bool location); 
   
 
@@ -22,4 +22,8 @@ void bigPrint(bigNumber number);
 
 uint64_t getOverflow(uint64_t  n1, uint64_t n2);
 void buffersEaqualize(bigNumber* n1, bigNumber* n2, bigNumber* n3);
+
+void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest);
+
+
 
