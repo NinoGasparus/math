@@ -9,20 +9,6 @@ void printNumber(uint64_t* number, int chunks){
 }
 int main(int argc, char* argv[]) {
 
-  /*std::string number = argv[1];
-  bigNumber* B = new bigNumber();
-  
-  B->init();
-  B->loadStr(number);
-  printMem(*B);
-
-
-  printf("\n");
-  B->extend(10, false);
-  B->extend(3, true);
-  printMem(*B); */
-
-//  std::cout << getOverflow(0UL, 1231546);
 
   bigNumber* A = new bigNumber();
   bigNumber* b = new bigNumber();
@@ -31,45 +17,28 @@ int main(int argc, char* argv[]) {
   b->init();
   c->init();
 
- // A->loadStr(argv[1]);
-  //b->loadStr(argv[2]);
-  //
- A->loadFile("Checks/number1");
- b->loadFile("Checks/one");
- // A->loadStr(argv[1]);
-  //b->loadStr(argv[2]);
+ A->loadFile("Checks/small9");
+ b->loadFile("Checks/small9");
 
   c->loadStr("1");
-  /*printMem(*A);
-  printf("\n");
-  printMem(*b);
-  printf("\n");
-  printMem(*c);
+  
 
-  printf("\n");
-  buffersEaqualize(A, b, c);
-  printMem(*A);
-  printf("\n");
-  printMem(*b);
-  printf("\n");
-  printMem(*c);
-  printf("\n");
-  printf("\n");
-  printf("\n");
-  */
+  //std::cout << A->blockCount;
+  //printMem(*A); 
+    
+
+
   bigAdd(A, b, c);
-
-  //bigPrint(*A);
- // printf("\n");
-  //bigPrint(*b);
- // printf("\n");
-  printMem(*A);
-  printf("\n");
+    
+/*
   printMem(*b);
   printf("\n");
   printMem(*c);
   printf("\n");
+*/
+  //printMem((*c));
   bigPrint(*c);
+
   printf("\n");
   return 0;
 }

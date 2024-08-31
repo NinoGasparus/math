@@ -1,6 +1,7 @@
 #include "bigNumber.h"
 #include <csignal>
 #include <cstdint>
+#include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <bitset>
@@ -16,16 +17,8 @@
 const uint64_t bufMax = 9999999999999999999UL;
 
 void bigPrint(bigNumber number){
-  bool leadingZero = true;
   for(int i = number.blockCount-1; i >=0; i--){
-    if(number.memory[i] == 0 &&  leadingZero){
-      
-    }else if(number.memory[i] != 0 && leadingZero){
-      leadingZero = false;
       std::cout << number.memory[i];
-    }else{
-    std::cout << number.memory[i];
-    }
   }
 }
 
@@ -91,6 +84,11 @@ uint64_t addBuffers(uint64_t b1, uint64_t b2, uint64_t* dest){
   return  0;
 }
 
+
+
+
+
+
 void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   buffersEaqualize(n1, n2, dest);
   
@@ -98,47 +96,56 @@ void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   uint64_t* n2mem =  n2->memory;
   uint64_t* n3mem =  dest->memory;
   
-  uint64_t buffCounter = 0;
+  uint64_t bufCounter = 0;
   uint64_t overflow = 0;
-  while(true){
+
+  uint64_t tmpVar = 0;
+  bool tryOverflow =  false;
+  while( bufCounter != n1->blockCount){
     
-    //add buffers
-    n3mem[buffCounter] =  n1mem[buffCounter] + n2mem[buffCounter];
-    
- //   std:: cout << n1mem[buffCounter]  << " + " << n2mem[buffCounter] << " => " << n3mem[buffCounter] <<std::endl;
-    //if overflow  increase 
-    if(n3mem[buffCounter] > bufMax  ||  n3mem[buffCounter] < n1mem[buffCounter] || n3mem[buffCounter] < n2mem[buffCounter]){
-      n3mem[buffCounter] = getOverflow(n1mem[buffCounter], n2mem[buffCounter]);
-      //std::cout << "of\n"; 
-      overflow ++;
+    //test compute
+    if(overflow  != 0){
+      //in case previous pass of the loop encoutered an  overflow add it to one of buffers
+      tmpVar = overflow+n1mem[bufCounter];
+      if(tmpVar > bufMax || tmpVar < n1mem[bufCounter] || tmpVar < overflow){
+        //cant be added to first number, try second
+        tmpVar = overflow+n2mem[bufCounter];
+
+        if(tmpVar > bufMax || tmpVar < n2mem[bufCounter] || tmpVar < overflow){
+        //second dont work either carry it on
+        //try to add at end of compute 
+        tryOverflow = true;
+        }else{
+          n2mem[bufCounter] +=overflow;
+          overflow = 0;
+        }
+      }else{
+        n1mem[bufCounter] += overflow;
+        overflow = 0;
+      }
+      tmpVar = 0;
 
     }
-    buffCounter++;
-    if(overflow != 0){
-      uint64_t tempCounter = buffCounter;
-      //try to increment n1mem by overflow
-      while(true){
-      tryAgain:
-        n1mem[tempCounter] += overflow;
-        if(n1mem[tempCounter] > bufMax || n1mem[tempCounter] < n1mem[tempCounter] - overflow || n1mem[tempCounter] < overflow){
-          //overflow carry on
-          n1mem[tempCounter] = getOverflow(n1mem[tempCounter] - overflow, overflow);
-          overflow = 1;
-          tempCounter ++;
-          goto tryAgain;
-          
-        }else{
-          //all ok
-          break;
-        }
-      }
-      
+
+
+
+    n3mem[bufCounter] = n1mem[bufCounter] + n2mem[bufCounter];
+    if( n3mem[bufCounter] > bufMax || n3mem[bufCounter] < n1mem[bufCounter] || n3mem[bufCounter] < n2mem[bufCounter]){
+      //overflow, cant add
+      std::cout << "OF! " << n1mem[bufCounter]  << " + " << n2mem[bufCounter] << " exceeds by " << getOverflow(n1mem[bufCounter] , n2mem[bufCounter]) << '\n';
+      n3mem[bufCounter] = getOverflow(n1mem[bufCounter] , n2mem[bufCounter]);
+      overflow++;
     }
-    //by here overflow must  be 0
-    //default  case
-    if(buffCounter == n1->blockCount){
-      break;
+
+    if(tryOverflow){
+      //figure out how much more we can go untill we reach bufmax value and reduce overflow by such
+      tmpVar = bufMax - n3mem[bufCounter]; 
+      n3mem[bufCounter] = bufMax;
+      overflow -= tmpVar;
+      tryOverflow = false;
     }
+    bufCounter++;
+
   }
 
 }

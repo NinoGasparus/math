@@ -39,7 +39,9 @@ uint64_t betterPOW(int exp) {
 }
 
 void  bigNumber::loadStr(std::string number){
- size = number.size();
+ 
+  //std::cout << number << std::endl;
+  size = number.size();
  blockCount = std::floor(size / PRECISION) +1;
   //realocate new memory are with more space
   if(blockCount > DEFBUFSIZE){
@@ -53,6 +55,7 @@ void  bigNumber::loadStr(std::string number){
    number[i] = number[i] - '0';
   }
 
+  
   int bufIndex = 0;
   int tmpExp = 0;
   int chunkSize = PRECISION; 
@@ -78,7 +81,7 @@ void bigNumber::loadFile(std::string filename){
 
   std::ifstream fileHandle(filename);
   try{
-    if(!fileHandle){:
+    if(!fileHandle){
       throw std::exception();
     }else{
       std::string s;

@@ -1,0 +1,51 @@
+ 
+  uint64_t buffCounter = 0;
+  uint64_t overflow = 0;
+  while(true){
+    
+    //add buffers
+    n3mem[buffCounter] =  n1mem[buffCounter] + n2mem[buffCounter];
+    
+     std:: cout << "Adding: " <<n1mem[buffCounter]  << " + " << n2mem[buffCounter] << " => " << n3mem[buffCounter] <<std::endl;
+    //if overflow  increase 
+    //
+    if(n3mem[buffCounter] > bufMax  ||  n3mem[buffCounter] < n1mem[buffCounter] || n3mem[buffCounter] < n2mem[buffCounter]){
+      n3mem[buffCounter] = getOverflow(n1mem[buffCounter], n2mem[buffCounter]);
+ 
+      overflow ++;
+      std::cout << "of: " << overflow << "\n"; 
+
+    }
+    
+    buffCounter++;
+
+    if(overflow != 0){
+      // add 1 at next step  so next addition will be  incremented by 1. 
+      // can be  done by increasing n1 or  n2 by 1 
+      //must mind that adding 1 can also cause overflow on that n1 or n2 so it must try until it suceeds so infinite loop that keeps increasing  a counter until  it can sucessfully  add one to the current register
+      //
+      while(true){
+
+        if(n1mem[buffCounter] + overflow  > bufMax || n1mem[buffCounter] +  overflow < n1mem[buffCounter] || n1mem[buffCounter] + overflow < overflow){
+          //we cant add to this buffer
+          n1mem[buffCounter] =  getOverflow(n1mem[buffCounter] , overflow);
+          std::cout << "cant add overflow, skipping.";
+          std::cout << "setting current value to " << getOverflow(n1mem[buffCounter] , overflow) <<std::endl;
+ 
+          buffCounter ++;
+        }else{
+          //ok entire overflow can fit 
+          n1mem[buffCounter] += overflow;
+        //adding  ok reset
+          overflow = 0;
+          break;
+        }
+      }
+    }
+    //by here overflow must  be 0
+    //default  case
+    if(buffCounter == n1->blockCount){
+      break;
+    }
+  }
+
