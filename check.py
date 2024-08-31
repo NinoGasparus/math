@@ -1,10 +1,10 @@
 import sys
 
-if(len(sys.argv) < 3):
-    print("not enough arguments")
-    sys.exit(0)
+file_path = 'Checks/number1'
 
-x = int(sys.argv[1])
-y = int(sys.argv[2])
+with open(file_path, 'r') as file:
+    number = int(file.read().strip())
+    x = number 
+    y = number
+    print(x + y)
 
-print(x+y)

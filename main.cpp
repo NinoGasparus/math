@@ -1,3 +1,4 @@
+#include <climits>
 #include <cstring>
 #include <cstdint>
 #include <cmath>
@@ -33,8 +34,11 @@ int main(int argc, char* argv[]) {
  // A->loadStr(argv[1]);
   //b->loadStr(argv[2]);
   //
-  A->loadFile("Checks/number1");
-  b->loadFile("Checks/number1");
+ A->loadFile("Checks/number1");
+ b->loadFile("Checks/one");
+ // A->loadStr(argv[1]);
+  //b->loadStr(argv[2]);
+
   c->loadStr("1");
   /*printMem(*A);
   printf("\n");
@@ -59,6 +63,12 @@ int main(int argc, char* argv[]) {
  // printf("\n");
   //bigPrint(*b);
  // printf("\n");
+  printMem(*A);
+  printf("\n");
+  printMem(*b);
+  printf("\n");
+  printMem(*c);
+  printf("\n");
   bigPrint(*c);
   printf("\n");
   return 0;

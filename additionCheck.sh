@@ -1,10 +1,10 @@
 #!/bin/bash
 
-x=$1
-y=$2
+#x=$1
+#y=$2
 
-./math.program "$x" "$y" > tmp1
-python3 check.py "$x" "$y" > tmp2
+./math.program > tmp1
+python3 check.py  > tmp2
 
 sum1=$(sha256sum tmp1 | awk '{print $1}')
 sum2=$(sha256sum tmp2 | awk '{print $1}')

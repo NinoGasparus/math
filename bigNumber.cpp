@@ -39,7 +39,7 @@ uint64_t betterPOW(int exp) {
 }
 
 void  bigNumber::loadStr(std::string number){
-  size = number.size();
+ size = number.size();
  blockCount = std::floor(size / PRECISION) +1;
   //realocate new memory are with more space
   if(blockCount > DEFBUFSIZE){
@@ -50,7 +50,7 @@ void  bigNumber::loadStr(std::string number){
   
   //subtract binary 0 from every character of the number to convert them to their b10 representations
   for(int i = 0; i < size; i++){
-    number[i] = number[i] - '0';
+   number[i] = number[i] - '0';
   }
 
   int bufIndex = 0;
@@ -78,7 +78,7 @@ void bigNumber::loadFile(std::string filename){
 
   std::ifstream fileHandle(filename);
   try{
-    if(!fileHandle){
+    if(!fileHandle){:
       throw std::exception();
     }else{
       std::string s;
