@@ -17,12 +17,12 @@ int main(int argc, char* argv[]) {
   b->init();
   c->init();
 
- A->loadFile("Checks/small9");
- b->loadFile("Checks/small9");
+ A->loadFile("Checks/number1");
+ b->loadFile("Checks/number1");
 
   c->loadStr("1");
   
-
+  
   //std::cout << A->blockCount;
   //printMem(*A); 
     
@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   printMem(*c);
   printf("\n");
 */
-  //printMem((*c));
+ printMem((*c));
   bigPrint(*c);
 
   printf("\n");

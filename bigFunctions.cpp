@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <iostream>
 #include <bitset>
+#include <memory>
 #include <ostream>
 #include <sys/types.h>
 
@@ -14,11 +15,15 @@
 
 
 
-const uint64_t bufMax = 9999999999999999999UL;
+const uint64_t bufMax = 10000000000000000000UL;
 
 void bigPrint(bigNumber number){
   for(int i = number.blockCount-1; i >=0; i--){
-      std::cout << number.memory[i];
+     if(number.memory[i] != 0){ 
+     std::cout << number.memory[i];
+     }else if (i != number.blockCount){
+      std::cout  <<  "0000000000000000000";
+    }
   }
 }
 
@@ -87,6 +92,23 @@ uint64_t addBuffers(uint64_t b1, uint64_t b2, uint64_t* dest){
 
 
 
+uint64_t addRegisters(uint64_t*  n1, uint64_t* n2, uint64_t*  dest){
+  uint64_t t1 =  *n1;
+  uint64_t t2 =  *n2;
+  uint64_t d  =  *dest;
+
+    d = t1 + t2;
+    if( d >= bufMax || d < t1 || d < t2){
+      //overflow, cant add
+    //  std::cout << "OF! " << t1 << " + " << t2 << " exceeds by " << getOverflow(t1, t2) << " of:";
+      d= getOverflow(t1,t2);
+      *dest = d;
+     return 1;
+    }else{
+      *dest = *n1 +  *n2;
+      return 0;
+    }
+  }
 
 
 void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
@@ -98,52 +120,23 @@ void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   
   uint64_t bufCounter = 0;
   uint64_t overflow = 0;
+  uint64_t TmpCounter = 0;
 
-  uint64_t tmpVar = 0;
-  bool tryOverflow =  false;
   while( bufCounter != n1->blockCount){
-    
-    //test compute
-    if(overflow  != 0){
-      //in case previous pass of the loop encoutered an  overflow add it to one of buffers
-      tmpVar = overflow+n1mem[bufCounter];
-      if(tmpVar > bufMax || tmpVar < n1mem[bufCounter] || tmpVar < overflow){
-        //cant be added to first number, try second
-        tmpVar = overflow+n2mem[bufCounter];
-
-        if(tmpVar > bufMax || tmpVar < n2mem[bufCounter] || tmpVar < overflow){
-        //second dont work either carry it on
-        //try to add at end of compute 
-        tryOverflow = true;
+    if(overflow != 0){
+      TmpCounter = bufCounter;
+      while(true){
+        overflow = addRegisters(&n1mem[TmpCounter], &overflow, &n1mem[TmpCounter]);
+        if(overflow != 0){
+          TmpCounter++;
         }else{
-          n2mem[bufCounter] +=overflow;
-          overflow = 0;
+          break;
         }
-      }else{
-        n1mem[bufCounter] += overflow;
-        overflow = 0;
       }
-      tmpVar = 0;
 
-    }
-
-
-
-    n3mem[bufCounter] = n1mem[bufCounter] + n2mem[bufCounter];
-    if( n3mem[bufCounter] > bufMax || n3mem[bufCounter] < n1mem[bufCounter] || n3mem[bufCounter] < n2mem[bufCounter]){
-      //overflow, cant add
-      std::cout << "OF! " << n1mem[bufCounter]  << " + " << n2mem[bufCounter] << " exceeds by " << getOverflow(n1mem[bufCounter] , n2mem[bufCounter]) << '\n';
-      n3mem[bufCounter] = getOverflow(n1mem[bufCounter] , n2mem[bufCounter]);
-      overflow++;
-    }
-
-    if(tryOverflow){
-      //figure out how much more we can go untill we reach bufmax value and reduce overflow by such
-      tmpVar = bufMax - n3mem[bufCounter]; 
-      n3mem[bufCounter] = bufMax;
-      overflow -= tmpVar;
-      tryOverflow = false;
-    }
+    } 
+    
+    overflow = addRegisters(&n1mem[bufCounter] , &n2mem[bufCounter] , &n3mem[bufCounter]);
     bufCounter++;
 
   }

@@ -1,6 +1,6 @@
 import sys
-
-file_path = 'Checks/small9'
+sys.set_int_max_str_digits(999999)
+file_path = 'Checks/number1'
 
 with open(file_path, 'r') as file:
     number = int(file.read().strip())
