@@ -122,7 +122,7 @@ void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   uint64_t overflow = 0;
   uint64_t TmpCounter = 0;
 
-  while( bufCounter != n1->blockCount){
+  while( bufCounter <= n1->blockCount){
     if(overflow != 0){
       TmpCounter = bufCounter;
       while(true){
