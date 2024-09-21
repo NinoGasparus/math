@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
   printMem(*c);
   printf("\n");
 */
- printMem((*c));
-  bigPrint(*c);
+ printMem(0,*c);
+  //bigPrint(*c);
 
   printf("\n");
   return 0;

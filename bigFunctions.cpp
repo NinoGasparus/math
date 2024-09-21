@@ -80,36 +80,11 @@ void buffersEaqualize(bigNumber* n1, bigNumber*  n2, bigNumber* n3){
   n3->extend(maxBufLen-n3->blockCount, true);
 
 }
-uint64_t addBuffers(uint64_t b1, uint64_t b2, uint64_t* dest){
-  *dest = b1 + b2;
-  if(*dest  < b1 || *dest < b2){
-    *dest = getOverflow(b1, b2);
-    return 1;
-  }
-  return  0;
-}
 
 
 
 
-uint64_t addRegisters(uint64_t*  n1, uint64_t* n2, uint64_t*  dest){
-  uint64_t t1 =  *n1;
-  uint64_t t2 =  *n2;
-  uint64_t d  =  *dest;
-
-    d = t1 + t2;
-    if( d >= bufMax || d < t1 || d < t2){
-      //overflow, cant add
-    //  std::cout << "OF! " << t1 << " + " << t2 << " exceeds by " << getOverflow(t1, t2) << " of:";
-      d= getOverflow(t1,t2);
-      *dest = d;
-     return 1;
-    }else{
-      *dest = *n1 +  *n2;
-      return 0;
-    }
-  }
-
+extern "C" bool addRegisters(uint64_t n1, uint64_t n2, uint64_t  dest, uint64_t regcount);
 
 void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   buffersEaqualize(n1, n2, dest);
@@ -118,27 +93,16 @@ void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
   uint64_t* n2mem =  n2->memory;
   uint64_t* n3mem =  dest->memory;
   
-  uint64_t bufCounter = 0;
+  int c= 0;
   uint64_t overflow = 0;
-  uint64_t TmpCounter = 0;
 
-  while( bufCounter <= n1->blockCount){
-    if(overflow != 0){
-      TmpCounter = bufCounter;
-      while(true){
-        overflow = addRegisters(&n1mem[TmpCounter], &overflow, &n1mem[TmpCounter]);
-        if(overflow != 0){
-          TmpCounter++;
-        }else{
-          break;
-        }
-      }
 
-    } 
-    
-    overflow = addRegisters(&n1mem[bufCounter] , &n2mem[bufCounter] , &n3mem[bufCounter]);
-    bufCounter++;
+  while(true){
+    if(addRegisters(n1mem[c], overflow,  n1mem[0])
+    if(addRegisters(n1mem[c], n2mem[c], n3mem, n1->blockCount)){
+      overflow ++;
+    }
+  } 
 
-  }
 
 }
