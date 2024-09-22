@@ -98,28 +98,25 @@ void bigAdd(bigNumber* n1, bigNumber* n2,  bigNumber* dest){
 
 
   while(true){
-    if(addRegisters(n1mem[c], n2mem[c], n3mem,0)){
+    if(addRegisters(n1mem[c], n2mem[c], n3mem+c,0)){
       overflow ++;
     }
     if(overflow != 0){
-      uint64_t tmpcounter = c;
+      uint64_t tmpcounter = c+1;
       while(true){
-        if(tmpcounter == dest->blockCount){
-          dest->extend(1, true);
-          
-        }
-        if(overflow ==  0){
-          break;
-        }else{
-          if(addRegisters(n1mem[tmpcounter], overflow,n1mem+tmpcounter , 0)){
+        if(addRegisters(n3mem[tmpcounter], overflow,n3mem+tmpcounter , 0)){
             overflow = 1;
             tmpcounter++;
           }else{
-            overflow = 0;
+            break;
           }
         }
       }
+    
+    if(c == dest->blockCount){
+      break;
     }
+    ++c;
   } 
 
 

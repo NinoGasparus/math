@@ -28,10 +28,17 @@ int main(int argc, char* argv[]) {
   
   //std::cout << A->blockCount;
   //printMem(*A); 
+    printf("A = \n");
+    bigPrint(*A);
+    printf("\n");
     
+    printf("B = \n");
+    bigPrint(*b);  
+    printf("\n");
+  
+    printf("C = \n");
 
-
-  bigAdd(A, b, c);
+    bigAdd(A, b, c);
     
 /*
   printMem(*b);
@@ -39,7 +46,7 @@ int main(int argc, char* argv[]) {
   printMem(*c);
   printf("\n");
 */
- printMem(0,*c);
+ bigPrint(*c);
   //bigPrint(*c);
 
   printf("\n");
